@@ -1,0 +1,102 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+library(tidyverse)
+library(CodeClanData)
+```
+
+Question 1
+
+```{r}
+Card_Base <- read.csv("data/CardBase.csv")
+```
+```{r}
+Customer_Base <- read.csv("data/CustomerBase.csv")
+```
+
+```{r}
+Fraud_Base <- read_csv("data/FraudBase.csv")
+```
+
+```{r}
+Transaction_Base <- read_csv("data/TransactionBase.csv")
+```
+
+Question 2
+
+```{r}
+left_join(Card_Base, Customer_Base, "Cust_ID")
+```
+
+Question 3
+
+```{r}
+full_join(Transaction_Base, Fraud_Base, by = "Transaction_ID")
+```
+Question 4
+
+```{r}
+semi_join(Card_Base, Transaction_Base, by = c("Card_Number" = "Credit_Card_ID"))
+```
+# Tidyr
+
+
+```{r}
+hat_observations <- read.csv("data/hat_observations.csv")
+```
+
+Question 1
+
+```{r}
+hat_split <- hat_observations %>% 
+  separate(observation, c("hat_colour", "hat_type"), sep = "\\,")
+           
+hat_split
+
+```
+
+Question 2
+
+```{r}
+hat_dates <- hat_split %>% 
+  unite(date, c("day", "month", "year"), sep = "/")
+
+hat_dates
+
+hat_dates %>% 
+  filter(hat_type == "beret") %>% 
+  group_by(date) %>% 
+  summarise(total = sum(observation_count)) %>% 
+  slice_max(total)
+
+```
+
+# Extension
+
+Question 1 
+
+```{r}
+Card_Base %>% 
+  inner_join(Customer_Base, by = "Cust_ID") %>% 
+  inner_join(transaction_base, by = c("card_number" = "credit_card_id")) %>% 
+  inner_join(fraud_base, by = "transaction_id")
+```
+
+Question 2
+
+```{r}
+exam_scores <- read.csv("data/exam_scores.csv")
+```
+
+```{r}
+exam_scores_long <- exam_scores %>% 
+  pivot_longer(exam_Q1:exam_Q10, names_to = "exam_question", values_to = "score") 
+
+exam_scores_long %>% 
+  separate(exam_question, sep = "Q", into = c("extra_column", "exam_question")) %>% 
+  select(-extra_column)
+```
+

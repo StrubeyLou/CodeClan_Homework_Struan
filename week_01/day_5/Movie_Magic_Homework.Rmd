@@ -10,6 +10,14 @@ library(tidyverse)
 ```{r}
 library(CodeClanData)
 ```
+```{r}
+library(tidyverse)
+here::here()
+```
+```{r}
+books <- read_csv("")
+```
+
 
 ```{r}
 library(janitor)
