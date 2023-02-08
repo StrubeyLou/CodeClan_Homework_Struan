@@ -1,0 +1,50 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+Weather Forecast Homework
+
+#Question 1
+
+```{r}
+weather_forcast <- list(
+                  "Thursday" = list(temperature = 8, chance_of_rain = 14, wind_speed = 21),
+                  "Friday" = list(temperature = 11, chance_of_rain = 30, wind_speed = 44),
+                  "Saturday" = list(temperature = 11, chance_of_rain = 10, wind_speed = 16)
+)
+```
+
+# Question 2
+
+```{r}
+day <- c('Thursday', 'Friday', 'Saturday')
+temperature <- c(8, 11, 11)
+chance_of_rain <- c(14, 30, 10)
+wind_speed <- c(21, 44, 16)
+weather_forcast <- tibble (temperature, chance_of_rain, wind_speed)
+tibble(temperature, chance_of_rain, wind_speed) %>% 
+
+```
+
+i) 14
+ii) 44
+iii) 8
+
+# Question 3
+
+```{r} 
+weather_fortnight <- matrix(c(9, 11, 11, 10, 11, 11, 10, 10, 11, 11, 11, 11, 11, 10), nrow = 2, ncol = 7)
+
+weather_fortnight
+```
+
+#Question 4
+```{r}
+weather_fortnight [2,3]
+weather_fortnight [2, ]
+weather_fortnight [, c(1, 3, 5)]
+```
+
+# Question 5
+
