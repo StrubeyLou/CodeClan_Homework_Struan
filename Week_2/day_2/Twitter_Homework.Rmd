@@ -2,3 +2,95 @@
 title: "R Notebook"
 output: html_notebook
 ---
+
+```{r}
+library(tidyverse)
+library(CodeClanData)
+library(janitor)
+```
+
+```{r}
+code_clan_tweets <- read_csv("data/code_clan_tweets.csv")
+```
+
+#Question 1 
+
+```{r}
+code_clan_tweets %>% 
+glimpse()
+```
+
+```{r}
+code_clan_tweets %>% 
+  dim()
+```
+
+ # Question 2
+ 
+```{r}
+code_clan_tweets %>% 
+  mutate(fave_tweet_total = sum(favorite_count, na.rm = TRUE),
+         .after = favorite_count)
+```
+ 
+# Question 3
+
+```{r}
+code_clan_tweets %>% 
+  mutate(retweet_mean = mean(retweet_count, na.rm = TRUE),
+         .after = retweet_count)
+```
+
+# Question 4
+
+```{r}
+code_clan_tweets %>% 
+  arrange(desc(favorite_count))
+```
+
+#Question 5
+
+```{r}
+code_clan_tweets %>% 
+  mutate(average_tweet_length = mean(display_text_width, na.rm = TRUE),
+         .after = display_text_width)
+```
+
+# Question 6
+
+```{r}
+code_clan_info <- read_csv("data/code_clan_info.csv")
+```
+
+```{r}
+full_join(code_clan_info, code_clan_tweets, by = "tweet_id")
+
+```
+```{r}
+code_clan_all <- left_join(code_clan_tweets, code_clan_info, by = "tweet_id")
+```
+
+# Question 7
+
+#How do you allocate a new name to a new table?
+
+# Question 8
+
+# Answers 
+ 
+```{r}
+code_clan_hashtags <- code_clan_all%>% 
+  select(tweet_id, hashtags) %>%
+  mutate(lowcase_hashtag = str_to_lower(hashtags)) %>%
+  select(-hashtags) %>%
+  drop_na(lowcase_hashtag)
+
+code_clan_hashtags
+```
+ 
+```{r}
+code_clan_hashtags %>% 
+  mutate(first_letter = str_sub(lowecase_hashtag, 1, 2) = 'c(')
+```
+ 
+ 
