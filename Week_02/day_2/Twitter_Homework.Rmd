@@ -93,4 +93,17 @@ code_clan_hashtags %>%
   mutate(first_letter = str_sub(lowecase_hashtag, 1, 2) = 'c(')
 ```
  
+Regex More
+
+Some characters are __Meta-characters__
+e.g. + * ^ $ () [] .
+
+These are characters that have a special meaning in a regex context
+
+If you try to search for these the regex engine will try and use them in their meta function
+
+If you want to find an actual, literal meta-character we have to _escape_ it first
+- using `\\` before the specific meta-character
+
+Sometimes the __secret formula__ is easier to find for getting rid of the bit you don't want rather than the formula for the bit you do want
  

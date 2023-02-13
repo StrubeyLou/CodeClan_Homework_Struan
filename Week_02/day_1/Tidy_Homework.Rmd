@@ -6,6 +6,7 @@ output: html_notebook
 ```{r}
 library(tidyverse)
 library(CodeClanData)
+library(janitor)
 ```
 
 Question 1
@@ -21,8 +22,11 @@ Customer_Base <- read.csv("data/CustomerBase.csv")
 Fraud_Base <- read_csv("data/FraudBase.csv")
 ```
 
+Cleaned names for consistent format. So that everyone else is on the same page and it is easier to remember the format. 
+
 ```{r}
-Transaction_Base <- read_csv("data/TransactionBase.csv")
+Transaction_Base <- read_csv("data/TransactionBase.csv") %>% 
+  clean_names()
 ```
 
 Question 2
@@ -39,6 +43,8 @@ full_join(Transaction_Base, Fraud_Base, by = "Transaction_ID")
 Question 4
 
 ```{r}
+Card_Base
+Transaction_Base
 semi_join(Card_Base, Transaction_Base, by = c("Card_Number" = "Credit_Card_ID"))
 ```
 # Tidyr
@@ -65,13 +71,34 @@ hat_dates <- hat_split %>%
   unite(date, c("day", "month", "year"), sep = "/")
 
 hat_dates
+```
 
+```{r}
 hat_dates %>% 
-  filter(hat_type == "beret") %>% 
-  group_by(date) %>% 
-  summarise(total = sum(observation_count)) %>% 
-  slice_max(total)
+  count(hat_colour)
+```
 
+reduce the dataset to berets, trying to understand that I need to filter out hat types to just get berets. I need to put it in quotation marks so that the item can be highlighted as a variable. Beret is a string value, and strings have to be in quotes. 
+
+Got to the mutate statement by using the help file and scrolling through "after." 
+
+```{r}
+hat_dates %>% 
+  mutate(is_beret = hat_type == "beret", .after = hat_type) %>% 
+  filter(is_beret)
+```
+
+I have learned to filter for hat type so that we can narrow the data down to just berets. I then grouped up the dates so that the dates counted the number of berets per day. I lastly summarised the data so that we were given a total sum for each day the berets were present. 
+
+I used the summarise function to give one row per group.
+The word total will create a new column called total. 
+The new column total will contain the sum of the observation counts for each date. 
+
+```{r}
+hat_dates %>% 
+filter(hat_type == "beret") %>% 
+  group_by(date) %>% 
+  summarise(total = sum(observation_count))
 ```
 
 # Extension

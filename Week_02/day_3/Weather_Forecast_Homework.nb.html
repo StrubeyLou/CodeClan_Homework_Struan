@@ -1845,12 +1845,104 @@ weather_fortnight</code></pre>
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>
+<div id="answers" class="section level1">
+<h1>Answers</h1>
+</div>
 <div id="question-5" class="section level1">
 <h1>Question 5</h1>
 <!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYW5zd2VyX29yX2RpdmlkZSA8LSBmdW5jdGlvbih4KSB7XG4gIGlmIChpcy5jaGFyYWN0ZXIoeCkpIHtcbiAgICByZXR1cm4ocGFzdGUoXCJUaGUgYW5zd2VyIGlzOiBcIiwgeCkpXG4gIH1cblxuICBpZiAoaXMubnVtZXJpYyh4KSkge1xuICAgIGlmICh4IDwgMTApIHtcbiAgICAgIHJldHVybih4KVxuICAgIH0gZWxzZSB7XG4gICAgICByZXR1cm4oeCAvIDEwKVxuICAgIH1cbiAgfVxuXG4gIHJldHVybihcIkludmFsaWQgaW5wdXRcIilcbn1cbmBgYCJ9 -->
+<pre class="r"><code>answer_or_divide &lt;- function(x) {
+  if (is.character(x)) {
+    return(paste(&quot;The answer is: &quot;, x))
+  }
+
+  if (is.numeric(x)) {
+    if (x &lt; 10) {
+      return(x)
+    } else {
+      return(x / 10)
+    }
+  }
+
+  return(&quot;Invalid input&quot;)
+}</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY2hhcl90ZXN0IDwtIFwiMTJcIlxubGVzc190aGFuXzEwX3Rlc3QgPC0gOVxuZ3JlYXRlcl90aGFuXzEwX3Rlc3QgPC0gMTJcbnRlc3RfMTAgPC0gMTBcbmBgYCJ9 -->
+<pre class="r"><code>char_test &lt;- &quot;12&quot;
+less_than_10_test &lt;- 9
+greater_than_10_test &lt;- 12
+test_10 &lt;- 10</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucGxhY2VfaG9sZGVyIDwtIHRlc3RfMTBcblxuZmluZF9hbnN3ZXIgPC0gZnVuY3Rpb24ocGxhY2VfaG9sZGVyKSB7XG4gIGlmIChpcy5jaGFyYWN0ZXIocGxhY2VfaG9sZGVyKSkge1xuICByZXN1bHQgPC0gcGFzdGUwKFwiVGhlIGFuc3dlciBpczogXCIsIHBsYWNlX2hvbGRlcilcbn0gZWxzZSBpZiAocGxhY2VfaG9sZGVyIDwgMTApIHtcbiAgcmVzdWx0IDwtIHBsYWNlX2hvbGRlclxufSBlbHNlIGlmIChwbGFjZV9ob2xkZXIgPiAxMCkge1xuICByZXN1bHQgPC0gcGxhY2VfaG9sZGVyIC8gMTBcbn0gZWxzZSB7XG4gIHJlc3VsdCA8LSBcIkludmFsaWQgaW5wdXRcIlxufVxuICBwcmludChyZXN1bHQpXG59XG5cbmZpbmRfYW5zd2VyKGNoYXJfdGVzdClcbmBgYCJ9 -->
+<pre class="r"><code>place_holder &lt;- test_10
+
+find_answer &lt;- function(place_holder) {
+  if (is.character(place_holder)) {
+  result &lt;- paste0(&quot;The answer is: &quot;, place_holder)
+} else if (place_holder &lt; 10) {
+  result &lt;- place_holder
+} else if (place_holder &gt; 10) {
+  result &lt;- place_holder / 10
+} else {
+  result &lt;- &quot;Invalid input&quot;
+}
+  print(result)
+}
+
+find_answer(char_test)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIFwiVGhlIGFuc3dlciBpczogMTJcIlxuIn0= -->
+<pre><code>[1] &quot;The answer is: 12&quot;</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZmluZF9hbnN3ZXIoZ3JlYXRlcl90aGFuXzEwX3Rlc3QpXG5gYGAifQ== -->
+<pre class="r"><code>find_answer(greater_than_10_test)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDEuMlxuIn0= -->
+<pre><code>[1] 1.2</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZmluZF9hbnN3ZXIobGVzc190aGFuXzEwX3Rlc3QpXG5gYGAifQ== -->
+<pre class="r"><code>find_answer(less_than_10_test)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDlcbiJ9 -->
+<pre><code>[1] 9</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZmluZF9hbnN3ZXIodGVzdF8xMClcbmBgYCJ9 -->
+<pre class="r"><code>find_answer(test_10)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIFwiSW52YWxpZCBpbnB1dFwiXG4ifQ== -->
+<pre><code>[1] &quot;Invalid input&quot;</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="question-6" class="section level1">
+<h1>Question 6</h1>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY2hlY2tfc2FtZW5lc3ModGVzdF8xLCB0ZXN0XzMpXG5cbmBgYCJ9 -->
+<pre class="r"><code>check_sameness(test_1, test_3)
+</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiRXJyb3IgaW4gY2hlY2tfc2FtZW5lc3ModGVzdF8xLCB0ZXN0XzMpIDogXG4gIGNvdWxkIG5vdCBmaW5kIGZ1bmN0aW9uIFwiY2hlY2tfc2FtZW5lc3NcIlxuIn0= -->
+<pre><code>Error in check_sameness(test_1, test_3) : 
+  could not find function &quot;check_sameness&quot;</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
 </div>
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiUiBOb3RlYm9vayIKb3V0cHV0OiBodG1sX25vdGVib29rCi0tLQoKV2VhdGhlciBGb3JlY2FzdCBIb21ld29yawoKI1F1ZXN0aW9uIDEKCmBgYHtyfQp3ZWF0aGVyX2ZvcmNhc3QgPC0gbGlzdCgKICAgICAgICAgICAgICAgICAgIlRodXJzZGF5IiA9IGxpc3QodGVtcGVyYXR1cmUgPSA4LCBjaGFuY2Vfb2ZfcmFpbiA9IDE0LCB3aW5kX3NwZWVkID0gMjEpLAogICAgICAgICAgICAgICAgICAiRnJpZGF5IiA9IGxpc3QodGVtcGVyYXR1cmUgPSAxMSwgY2hhbmNlX29mX3JhaW4gPSAzMCwgd2luZF9zcGVlZCA9IDQ0KSwKICAgICAgICAgICAgICAgICAgIlNhdHVyZGF5IiA9IGxpc3QodGVtcGVyYXR1cmUgPSAxMSwgY2hhbmNlX29mX3JhaW4gPSAxMCwgd2luZF9zcGVlZCA9IDE2KQopCmBgYAoKIyBRdWVzdGlvbiAyCgpgYGB7cn0KZGF5IDwtIGMoJ1RodXJzZGF5JywgJ0ZyaWRheScsICdTYXR1cmRheScpCnRlbXBlcmF0dXJlIDwtIGMoOCwgMTEsIDExKQpjaGFuY2Vfb2ZfcmFpbiA8LSBjKDE0LCAzMCwgMTApCndpbmRfc3BlZWQgPC0gYygyMSwgNDQsIDE2KQp3ZWF0aGVyX2ZvcmNhc3QgPC0gdGliYmxlICh0ZW1wZXJhdHVyZSwgY2hhbmNlX29mX3JhaW4sIHdpbmRfc3BlZWQpCnRpYmJsZSh0ZW1wZXJhdHVyZSwgY2hhbmNlX29mX3JhaW4sIHdpbmRfc3BlZWQpICU+JSAKCmBgYAoKaSkgMTQKaWkpIDQ0CmlpaSkgOAoKIyBRdWVzdGlvbiAzCgpgYGB7cn0gCndlYXRoZXJfZm9ydG5pZ2h0IDwtIG1hdHJpeChjKDksIDExLCAxMSwgMTAsIDExLCAxMSwgMTAsIDEwLCAxMSwgMTEsIDExLCAxMSwgMTEsIDEwKSwgbnJvdyA9IDIsIG5jb2wgPSA3KQoKd2VhdGhlcl9mb3J0bmlnaHQKYGBgCgojUXVlc3Rpb24gNApgYGB7cn0Kd2VhdGhlcl9mb3J0bmlnaHQgWzIsM10Kd2VhdGhlcl9mb3J0bmlnaHQgWzIsIF0Kd2VhdGhlcl9mb3J0bmlnaHQgWywgYygxLCAzLCA1KV0KYGBgCgojIFF1ZXN0aW9uIDUKCg==</div>
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiUiBOb3RlYm9vayIKb3V0cHV0OiBodG1sX25vdGVib29rCi0tLQoKV2VhdGhlciBGb3JlY2FzdCBIb21ld29yawoKI1F1ZXN0aW9uIDEKCmBgYHtyfQp3ZWF0aGVyX2ZvcmNhc3QgPC0gbGlzdCgKICAgICAgICAgICAgICAgICAgIlRodXJzZGF5IiA9IGxpc3QodGVtcGVyYXR1cmUgPSA4LCBjaGFuY2Vfb2ZfcmFpbiA9IDE0LCB3aW5kX3NwZWVkID0gMjEpLAogICAgICAgICAgICAgICAgICAiRnJpZGF5IiA9IGxpc3QodGVtcGVyYXR1cmUgPSAxMSwgY2hhbmNlX29mX3JhaW4gPSAzMCwgd2luZF9zcGVlZCA9IDQ0KSwKICAgICAgICAgICAgICAgICAgIlNhdHVyZGF5IiA9IGxpc3QodGVtcGVyYXR1cmUgPSAxMSwgY2hhbmNlX29mX3JhaW4gPSAxMCwgd2luZF9zcGVlZCA9IDE2KQopCmBgYAoKIyBRdWVzdGlvbiAyCgpgYGB7cn0KZGF5IDwtIGMoJ1RodXJzZGF5JywgJ0ZyaWRheScsICdTYXR1cmRheScpCnRlbXBlcmF0dXJlIDwtIGMoOCwgMTEsIDExKQpjaGFuY2Vfb2ZfcmFpbiA8LSBjKDE0LCAzMCwgMTApCndpbmRfc3BlZWQgPC0gYygyMSwgNDQsIDE2KQp3ZWF0aGVyX2ZvcmNhc3QgPC0gdGliYmxlICh0ZW1wZXJhdHVyZSwgY2hhbmNlX29mX3JhaW4sIHdpbmRfc3BlZWQpCnRpYmJsZSh0ZW1wZXJhdHVyZSwgY2hhbmNlX29mX3JhaW4sIHdpbmRfc3BlZWQpICU+JSAKCmBgYAoKaSkgMTQKaWkpIDQ0CmlpaSkgOAoKIyBRdWVzdGlvbiAzCgpgYGB7cn0gCndlYXRoZXJfZm9ydG5pZ2h0IDwtIG1hdHJpeChjKDksIDExLCAxMSwgMTAsIDExLCAxMSwgMTAsIDEwLCAxMSwgMTEsIDExLCAxMSwgMTEsIDEwKSwgbnJvdyA9IDIsIG5jb2wgPSA3KQoKd2VhdGhlcl9mb3J0bmlnaHQKYGBgCgojUXVlc3Rpb24gNApgYGB7cn0Kd2VhdGhlcl9mb3J0bmlnaHQgWzIsM10Kd2VhdGhlcl9mb3J0bmlnaHQgWzIsIF0Kd2VhdGhlcl9mb3J0bmlnaHQgWywgYygxLCAzLCA1KV0KYGBgCgojIEFuc3dlcnMKCiMgUXVlc3Rpb24gNQoKYGBge3J9CmFuc3dlcl9vcl9kaXZpZGUgPC0gZnVuY3Rpb24oeCkgewogIGlmIChpcy5jaGFyYWN0ZXIoeCkpIHsKICAgIHJldHVybihwYXN0ZSgiVGhlIGFuc3dlciBpczogIiwgeCkpCiAgfQoKICBpZiAoaXMubnVtZXJpYyh4KSkgewogICAgaWYgKHggPCAxMCkgewogICAgICByZXR1cm4oeCkKICAgIH0gZWxzZSB7CiAgICAgIHJldHVybih4IC8gMTApCiAgICB9CiAgfQoKICByZXR1cm4oIkludmFsaWQgaW5wdXQiKQp9CmBgYAoKYGBge3J9CmNoYXJfdGVzdCA8LSAiMTIiCmxlc3NfdGhhbl8xMF90ZXN0IDwtIDkKZ3JlYXRlcl90aGFuXzEwX3Rlc3QgPC0gMTIKdGVzdF8xMCA8LSAxMApgYGAKCmBgYHtyfQpwbGFjZV9ob2xkZXIgPC0gdGVzdF8xMAoKZmluZF9hbnN3ZXIgPC0gZnVuY3Rpb24ocGxhY2VfaG9sZGVyKSB7CiAgaWYgKGlzLmNoYXJhY3RlcihwbGFjZV9ob2xkZXIpKSB7CiAgcmVzdWx0IDwtIHBhc3RlMCgiVGhlIGFuc3dlciBpczogIiwgcGxhY2VfaG9sZGVyKQp9IGVsc2UgaWYgKHBsYWNlX2hvbGRlciA8IDEwKSB7CiAgcmVzdWx0IDwtIHBsYWNlX2hvbGRlcgp9IGVsc2UgaWYgKHBsYWNlX2hvbGRlciA+IDEwKSB7CiAgcmVzdWx0IDwtIHBsYWNlX2hvbGRlciAvIDEwCn0gZWxzZSB7CiAgcmVzdWx0IDwtICJJbnZhbGlkIGlucHV0Igp9CiAgcHJpbnQocmVzdWx0KQp9CgpmaW5kX2Fuc3dlcihjaGFyX3Rlc3QpCmZpbmRfYW5zd2VyKGdyZWF0ZXJfdGhhbl8xMF90ZXN0KQpmaW5kX2Fuc3dlcihsZXNzX3RoYW5fMTBfdGVzdCkKZmluZF9hbnN3ZXIodGVzdF8xMCkKCmBgYAojIFF1ZXN0aW9uIDYKCmBgYHtyfQp0ZXN0XzEgPC0gMTozCnRlc3RfMiA8LSAzOjEKdGVzdF8zIDwtIDQ6Ngp0ZXN0XzQgPC0gYygxLCAzLCA0KQoKeCA9IHRlc3RfMQp5ID0gdGVzdF8zCgpjaGVja19zYW1lbmVzcyA8LSBmdW5jdGlvbih4LCB5KQoKaWYgKGFsbCh4ID09IHkpIHsKICByZXR1cm4oIm1ldCIpCn0gZWxzZSBpZihhbGwoc29ydCh4KSA9PSBzb3J0KHkpKSkgewogIHJldHVybigiYWxtb3N0IG1ldCIpCn0gZWxzZSB7CiAgcmV0dXJuKCJub3QgZXZlbiBjbG9zZSIpCn0KCmNoZWNrX3NhbWVuZXNzKHRlc3RfMSwgdGVzdF8xKQpjaGVja19zYW1lbmVzcyh0ZXN0XzEsIHRlc3RfMikKY2hlY2tfc2FtZW5lc3ModGVzdF8xLCB0ZXN0XzMpCgpgYGAKCg==</div>
 
 
 
