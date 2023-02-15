@@ -23,7 +23,9 @@ meteorite_landings %>%
 ```
 
 
-Question 2
+# Question 2
+
+Using clean names is only first steps to meet standards 
 
 ```{r}
 meteorite_landings <- meteorite_landings %>% 
@@ -32,12 +34,27 @@ meteorite_landings <- meteorite_landings %>%
 
 # Question 3
 
-```{r}
-meteorite_landings_geo <- meteorite_landings %>% 
-  separate(geo_location, c("latitude", "longitude"), sep = "\\,")
+Get rid of the brackets from the latitude and longitude.
+Using a mutate function I want to ammend the contents of the latitude column. I do this by overrighting the latitude column by... using an equals sign
 
+
+```{r}
+#meteorite_landings_geo <-
+meteorite_landings %>% 
+  separate(geo_location, c("latitude", "longitude"), sep = "\\,") %>%
+  mutate(latitude = as.numeric(str_remove(latitude, "[(]")))
 meteorite_landings_geo
 #need to find out how to get rid of brackets
+```
+
+# working on longitude
+
+
+```{r}
+meteorite_landings %>% 
+  separate(geo_location, c("latitude", "longitude"), sep = "\\,") %>%
+   mutate(latitude = as.numeric(str_remove(latitude, "[(]"))) %>% 
+  mutate(longitude = as.numeric(str_remove(longitude, "[)]")))
 ```
 
 # Question 4 - Need to work on

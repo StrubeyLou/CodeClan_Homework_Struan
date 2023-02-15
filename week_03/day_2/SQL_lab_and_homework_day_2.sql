@@ -82,9 +82,12 @@ FROM employees AS e INNER JOIN teams AS t
 ON e.team_id = t.id
 GROUP BY t."name", t.id  
 
+
 -- (b) The total_day_charge of a team is defined as the charge_cost 
 -- of the team multiplied by the number of employees in the team. 
 -- Calculate the total_day_charge for each team. 
+
+-- my attempt which was incorrect
 
 SELECT 
 t.name, t.id, count (e.id) AS n_employees, n_employees * charge_cost AS total_day_charge
@@ -92,11 +95,66 @@ FROM employees AS e INNER JOIN teams AS t
 ON e.team_id = t.id
 GROUP BY t."name", t.id 
 
+-- copied from answers
+
+SELECT 
+  t.name,
+  COUNT(e.id) * CAST(t.charge_cost AS INT) AS total_day_charge
+FROM employees AS e
+INNER JOIN teams AS t
+ON e.team_id = t.id
+GROUP BY t.id
+
 -- (c). How would you amend your query from above to show only those teams with a total_day_charge greater than 5000? 
+
+-- No attempt made by me 
+
+-- Copied from answers
+
+SELECT 
+  t.name,
+  COUNT(e.id) * CAST(t.charge_cost AS INT) AS total_day_charge
+FROM employees AS e
+INNER JOIN teams AS t
+ON e.team_id = t.id
+GROUP BY t.id
+HAVING COUNT(e.id) * CAST(t.charge_cost AS INT) > 5000
 
 -- Question 5
 
 --How many of the employees serve on one or more committees?
 
+-- Incorrect answer
+
 SELECT DISTINCT count(employee_id) AS committee_count
 FROM employees_committees;
+
+--correct answer
+
+SELECT 
+  COUNT(DISTINCT(employee_id)) AS num_employees_on_committees
+FROM employees_committees
+
+-- Question 6 
+
+-- How many of the employees do not serve on a committee?
+
+-- 1. Fully join the two tables (employees and committees)
+-- 2. Any time we see NULL in committee id it means they do not have a committee.
+-- Copied from answers
+
+SELECT 
+  COUNT(*) AS num_not_in_committees
+FROM employees e
+LEFT JOIN employees_committees ec
+ON e.id = ec.employee_id 
+WHERE ec.employee_id IS NULL
+
+-- Copied from david 
+
+SELECT
+   count(e.id)
+FROM employees AS e
+FULL JOIN employees_committees AS e_c 
+ON e.id = e_c.employee_id
+WHERE e_c.committee_id IS NULL 
