@@ -1,0 +1,56 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+library(tidyverse)
+```
+# Recoding excercise
+
+```{r}
+inmates <- read_tsv("../data/inmates.tsv")
+```
+
+# 1 Change the ‘M’/‘F’ values in gender to be ‘Male’/‘Female’.
+
+```{r}
+inmates %>% 
+  mutate(gender = recode(gender, "M" = "Male", "F" = "Female"))
+```
+
+# 2.For the race variable, everything is in capital letters, change each level to title case. Also combine ‘AMER IND’ and ‘ASIAN’ into an ‘Other’ category.
+
+```{r}
+inmates %>% 
+  mutate(race = recode(race, "WHITE" = "White", "BLACK" = "Black", 
+                       "HISPANIC" = "Hispanic", .default = "Other"))
+```
+
+
+# 3. Make a new variable bond_level which is High whenever the bond for an inmate is above $1,000,000 and Normal otherwise.
+
+```{r}
+inmates_bond <- inmates %>% 
+  mutate(bond_level = case_when(
+    bond_amount > 1000000 ~ "High",
+    TRUE ~ "Normal"),
+    .after = bond_amount)
+```
+
+# 4. How many inmates have a high bond level?
+
+```{r}
+inmates_bond %>% 
+  count(bond_level)
+```
+
+# 5. Modify the detainer variable so that NONE, IMIGRATION and FEDERAL are in title case and all other levels are set to Other.
+
+```{r}
+inmates %>% 
+  mutate(detainer = recode(detainer, "NONE" = "None", "IMMIGRATION" = "Immigration", "FEDERAL" = "Federal", .default = "Other"))
+```
+
+
+

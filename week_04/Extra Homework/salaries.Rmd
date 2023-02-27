@@ -1,0 +1,152 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+```{r}
+library(tidyverse)
+```
+```{r}
+salaries <- read_csv("../data/salaries.csv")
+```
+
+# 1. Use select to see the beginning salary variable and the current salary variable.
+```{r}
+salaries %>% 
+  select(beginning_salary, current_salary)
+```
+
+# 2. Use filter to see the employees aged over 50, who have a salary over £20,000.
+
+```{r}
+salaries %>% 
+  filter(age > 50, current_salary > 20000)
+```
+
+# 3. Use arrange to order by the data so that the highest salaries are first.
+
+```{r}
+salaries %>% 
+  arrange(desc(current_salary))
+```
+
+# 4. Use mutate to make a new variables beginning_salary_pence and current_salary_pence. These should have the corresponding salaries in pence instead of pounds.
+
+```{r}
+salaries %>% 
+  mutate(current_salary_pence = (current_salary * 100),
+         .after = current_salary) %>% 
+  mutate(beginning_salary_pence = (beginning_salary* 100),
+         .after = beginning_salary)
+```
+
+# 5. Use summarise to find the maximum age and the minimum age.
+
+# Unsure, come back to once you have done the other answers.
+
+# 6. Find the minimum salary and the maximum salary.
+
+# 6.1 Maximum
+
+```{r}
+salaries %>% 
+  slice_max(current_salary)
+```
+
+# 6.2 Minimum
+
+```{r}
+salaries %>% 
+  slice_min(current_salary)
+```
+
+# 7. Find all the employees aged under 30.
+
+```{r}
+salaries %>% 
+  filter(age < 30)
+```
+
+#8. Order the data in terms of increasing educational level where ties are broken using age.
+
+```{r}
+salaries %>% 
+  arrange(educational_level, age)
+```
+
+# 9. Drop all the non-numeric variables in the tibble.
+
+```{r}
+salaries %>% 
+  select(-gender, -employment_category, -is_white)
+```
+
+
+# 10. Find all employees with either less than 2 years work experience or an education level below 12.
+
+```{r}
+  salaries %>% 
+  filter(work_experience < 2 | educational_level < 12)
+```
+
+# 11. Transform the salary variables so they measure how many 1000s of pounds each salary is.
+
+```{r}
+salaries %>% 
+  mutate(beginning_salary_1000 = (beginning_salary / 1000),
+         .after = beginning_salary) %>% 
+  mutate(current_salary_1000 = (current_salary / 1000),
+.after = current_salary)
+```
+
+#12, Find all the females employees with an employment category of ‘security officer’. 
+
+```{r}
+salaries %>% 
+  filter(gender == "female", employment_category == "security officer")
+```
+
+#2 Pipes
+
+# 2.1 Find the average salary per educational level, for educational levels of 16 and below. Arrange the results from highest salary to lowest. Answer using pipes.
+
+```{r}
+salaries %>% 
+  group_by(educational_level) %>% 
+  summarise(mean_salary = mean(current_salary)) %>% 
+  filter(educational_level <= 16) %>% 
+  arrange(desc(mean_salary))
+```
+
+#2.2 Find the average salary for each gender in each employment category. Exclude any employees with less than 2 years of work experience. Answer using pipes.
+
+```{r}
+salaries %>% 
+  filter(work_experience < 2) %>% 
+  group_by(gender, employment_category) %>% 
+  summarise(mean_salary = mean(current_salary))
+```
+
+# 2.3 For each employment category find the difference between the mean salary and the median salary. Arrange so that the greatest difference comes first. Answer using pipes. (The difference between mean salary and median salary gives us a measure of how skewed salaries - we’ll come on to this shortly!)
+
+```{r}
+salaries %>% 
+  select(employment_category, current_salary) %>% 
+  group_by(employment_category) %>% 
+  mutate(mean_salary = mean(current_salary)) %>% 
+  mutate(median_salary = median(current_salary)) %>% 
+  mutate(mean_median_difference = (mean_salary - median_salary)) %>% 
+  distinct(employment_category, mean_median_difference) %>% 
+  arrange(desc(mean_median_difference))
+```
+
+# There was a tidier version in the answers
+
+```{r}
+salaries %>%
+  group_by(employment_category) %>%
+  summarise(mean_salary = mean(current_salary),
+            median_salary = median(current_salary)) %>% 
+  mutate(difference = mean_salary - median_salary) %>%
+  arrange(desc(difference))
+```
+
