@@ -71,6 +71,15 @@ ggplot() +
   labs(title = "QB Competitors")
 ```
 
+From answers 
+
+```{r}
+qb_competitors %>% 
+  ggplot(aes(x = Year, y = Revenue, fill = Company)) +
+  geom_area() +
+  theme_classic()
+```
+
 # Question 5.
 #Now show the sales from the four competitors as a line graph. Include an extra layer that shows the data points used to make the lines. 
 
@@ -94,5 +103,29 @@ ggplot(qb_device_data) +
   geom_line(aes(x = hours, y = counts), stat = "identity") +
   facet_grid(device ~ id) +
   labs(title = "I don't think this one is right")
+```
+# Copied answers 
+
+
+```{r}
+qb_device_data %>% 
+  mutate(decimal_hour = hours + (mins = 60)) %>% 
+  ggplot(aes(x = decimal_hour, y = counts)) +
+  geom_line(aes(col = device)) +
+  facet_grid(id ~ device)
+```
+
+
+```{r}
+theme_corporate <- theme(
+  text = element_text(size = 12),
+  title = element_text(size = 14),
+  axis.text = element_text(size = 9),
+  panel.background = element_rect(fill = "white"),
+  panel.grid = element_line(colour = "grey80")
+)
+```
+```{r}
+corporate_colours <- col_scheme <- c("#E89FE9", "#50434F", "#B6A7B5", "#F9A472", "#BD7040")
 ```
 
