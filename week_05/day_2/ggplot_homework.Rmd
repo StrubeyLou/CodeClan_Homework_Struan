@@ -1,0 +1,83 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+library(tidyverse)
+library(CodeClanData)
+```
+
+```{r}
+backpack
+```
+
+# Question 2.
+
+#What is the distribution of backpack weights that students are carrying? Choose an appropriate graph to show the distribution.
+
+```{r}
+ggplot(backpack)+
+  geom_histogram(aes(x = backpack_weight), colour = "white", fill = "grey20")+
+  labs(x = "Backpack Weight", title = "Backpack Weight Distribution")
+```
+
+#The majority of packpacks are around the 10-15lb weight category with only a few being much heavier. 
+
+# Question 3.
+
+#Are there differences in backpack weight between sex?
+
+```{r}
+ggplot(backpack) +
+  geom_histogram(aes(x = backpack_weight, fill = sex), position = "dodge")
+```
+#Women have a slight preference for lighter backpacks but otherwise there is very little difference. 
+
+# Question 4.
+
+#What is the relationship between body weight and backpack weight?
+
+```{r}
+ggplot(backpack)+
+  geom_point(aes(x = body_weight, y = backpack_weight))+
+  geom_smooth(aes(x = body_weight, y = backpack_weight))
+```
+
+#There is very little correlation between body weight and backpack weight.
+
+# Question 5.
+
+#Is this relationship different between men and women? Choose an appropriate plot and interpret your findings. 
+
+```{r}
+ggplot(backpack)+
+  geom_point(aes(x = body_weight, y = backpack_weight, colour = sex))
+```
+#Still no correlation when it comes to gender. 
+
+# Question 6.
+
+#What proportion of students report back pain?
+
+```{r}
+ggplot(backpack)+
+  geom_bar(aes(x = back_problems))+
+  coord_polar()
+```
+
+# Question 7.
+
+#Is this proportion different between men and women?
+
+
+# Question 8 
+
+#Now you’ve investigated your data separately, create plots to describe the relationship between backpack weight, body weight, gender and reported backpain.
+
+```{r}
+ggplot(backpack)+
+  geom_col(aes(x = backpack_weight, y = body_weight))+
+  facet_wrap(~sex ~back_problems)
+```
+#I don't think this is right as the data seems to have no correlation
