@@ -65,10 +65,35 @@ ggplot(backpack)+
   geom_bar(aes(x = back_problems))+
   coord_polar()
 ```
+# correct answer
+
+```{r}
+backpack %>% 
+  mutate(back_problems = if_else(back_problems == 1, "Back Pain", "No Back Pain")) %>% 
+  group_by(back_problems) %>% 
+  summarise(n = n(),
+            prop = n() / nrow(backpack)) %>% 
+  ggplot() +
+  aes(x = back_problems, y = prop) +
+  geom_col()
+```
 
 # Question 7.
 
 #Is this proportion different between men and women?
+
+#Copied from answers by David
+
+```{r}
+backpack %>% 
+  mutate(back_problems = if_else(back_problems == 1, "Back Pain", "No Back Pain")) %>% 
+  group_by(back_problems, sex) %>% 
+  summarise(n = n(),
+            prop = n() / nrow(backpack)) %>% 
+  ggplot() +
+  aes(x = back_problems, y = prop, fill = sex) +
+  geom_col()
+```
 
 
 # Question 8 
@@ -81,3 +106,7 @@ ggplot(backpack)+
   facet_wrap(~sex ~back_problems)
 ```
 #I don't think this is right as the data seems to have no correlation
+
+# Extension 
+
+# 1.Does reported backpain differ across the year groups? Ignore year 0 in your data.
