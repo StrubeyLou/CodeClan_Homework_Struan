@@ -4,6 +4,13 @@ library(bslib)
 
 whisky <- CodeClanData::whisky
 
+islay_whisky <- whisky %>% 
+  filter(Region == "Islay") %>% 
+  select(Distillery, Body, Sweetness, Smoky, Floral, Medicinal)
+
+islay_pivot <- islay_whisky %>% 
+  pivot_longer(cols = 2:6, names_to = "Flavour", values_to = "Score")
+
 flavour_choices <- islay_pivot %>% distinct(Flavour) %>% pull
 whisky_choices <- islay_pivot %>% distinct(Distillery) %>% pull
 
