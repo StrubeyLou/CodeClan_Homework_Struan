@@ -1,0 +1,32 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+library(shiny)
+library(tidyverse)
+library(bslib)
+library(CodeClanData)
+```
+
+```{r}
+whisky <- CodeClanData::whisky
+```
+
+```{r}
+islay_whisky <- whisky %>% 
+  filter(Region == "Islay") %>% 
+  select(Distillery, Body, Sweetness, Smoky, Floral, Medicinal)
+```
+
+```{r}
+ggplot(islay_whisky)+
+  geom_col(aes(x = Distillery, y = Body))
+```
+
+```{r}
+islay_pivot <- islay_whisky %>% 
+  pivot_longer(cols = 2:6, names_to = "Flavour", values_to = "Score")
+```
+

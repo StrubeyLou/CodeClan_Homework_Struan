@@ -1,0 +1,54 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+library(tidyverse)
+```
+
+```{r}
+videogames <- CodeClanData::game_sales
+```
+
+```{r}
+videogames %>% 
+  distinct(developer) %>% 
+  pull()
+```
+
+```{r}
+videogames %>% 
+  group_by(developer) %>% 
+  summarise(average_score = mean(critic_score))
+```
+```{r}
+videogames %>% 
+  filter(year_of_release == "2007") %>% 
+  select(name, critic_score) %>% 
+  arrange(desc(critic_score)) %>% 
+  head(10) %>% 
+  pull(name)
+```
+```{r}
+best_videogames <- videogames %>% 
+  select(name, year_of_release, critic_score, sales, developer) %>% 
+  filter(critic_score > 85) %>% 
+  arrange(year_of_release)
+
+```
+
+
+```{r}
+videogames %>% 
+  group_by(genre) %>% 
+  summarise(best_sellers = sum(sales))
+```
+
+
+```{r}
+videogames %>% 
+  group_by(year_of_release) %>% 
+  summarise(average_score = mean(critic_score))
+```
+
