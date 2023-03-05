@@ -4,7 +4,8 @@ library(shiny)
 
 videogames <- CodeClanData::game_sales
 
-
+# This list was created to highlight the sales figures of videogames. 
+# There are very few which make it into the tens of millions of sales but those that are should be highlighted. 
 library(shiny)
 
 ui <- fluidPage(
