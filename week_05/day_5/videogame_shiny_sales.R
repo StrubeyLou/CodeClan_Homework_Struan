@@ -26,12 +26,13 @@ ui <- fluidPage(
 
 server <- function(input, output, session) {
   output$sales_plot <- renderPlot({
-    
+    sales_range <- input$slider_sales
     videogames %>%
-      filter(sales == input$slider_sales) %>%
+      filter(between(sales, sales_range[1], sales_range[2])) %>%
       ggplot() +
       aes(x = name, y = sales) +
-      geom_point() 
+      geom_point() +
+      coord_flip()
   })
 }
 

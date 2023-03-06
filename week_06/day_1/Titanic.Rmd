@@ -1,0 +1,178 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+library(tidyverse)
+library(janitor)
+library(gtools)
+```
+
+```{r}
+titanic <- read_csv("data/titanic.csv")
+```
+
+```{r}
+titanic_crew <- titanic %>% 
+  mutate(status = case_when(
+    class == "1st" ~ "passenger",
+    class == "2nd" ~ "passenger",
+    class == "3rd" ~ "passenger",
+    .default = "crew"
+  ))
+```
+
+# Working out the survival rate of the crew
+
+```{r}
+titanic_crew_deaths <- titanic_crew %>% 
+  filter(survived == "no" & status == "crew") %>% 
+  summarise(p = n()/nrow(titanic_crew)) %>% 
+  pull()
+      
+titanic_crew_total <- titanic_crew %>% 
+  filter(status == "crew") %>% 
+  summarise(p = n()/nrow(titanic_crew)) %>% 
+  pull()
+
+titanic_crew_deaths / titanic_crew_total
+```
+
+The total death rate for the Titanic crew was 76.3%.
+
+```{r}
+titanic_crew_survived <- titanic_crew %>% 
+  filter(survived == "yes" & status == "crew") %>% 
+  summarise(p = n()/nrow(titanic_crew)) %>% 
+  pull()
+      
+titanic_crew_total <- titanic_crew %>% 
+  filter(status == "crew") %>% 
+  summarise(p = n()/nrow(titanic_crew)) %>% 
+  pull()
+
+titanic_crew_survived / titanic_crew_total
+```
+
+The survival rate for the Titanic crew was 23.7%. 
+
+
+# Working out the survival rate of the passengers
+
+```{r}
+titanic_passenger_deaths <- titanic_crew %>% 
+  filter(survived == "no" & status == "passenger") %>% 
+  summarise(p = n()/nrow(titanic_crew)) %>% 
+  pull()
+
+titanic_passenger_total <- titanic_crew %>% 
+  filter(status == "passenger") %>% 
+  summarise(p = n()/nrow(titanic_crew)) %>% 
+  pull()
+
+titanic_passenger_deaths / titanic_passenger_total
+```
+
+The death rate for passengers was 62%. 
+
+```{r}
+titanic_passenger_survived <- titanic_crew %>% 
+  filter(survived == "yes" & status == "passenger") %>% 
+  summarise(p = n()/nrow(titanic_crew)) %>% 
+  pull()
+
+titanic_passenger_total <- titanic_crew %>% 
+  filter(status == "passenger") %>% 
+  summarise(p = n()/nrow(titanic_crew)) %>% 
+  pull()
+
+titanic_passenger_survived / titanic_passenger_total
+```
+
+The survival rate for Titanic passengers was 38%. 
+
+# Conclusion: there is a clear difference that passengers on the Titanic were much more likely to survive than their crew counterparts. 
+
+# 1.2 Probability Consolidation Questions
+
+1. If I roll a six-sided dice once, what is the probability of getting a number less than 5?
+
+```{r}
+c <- rolldie(1)
+c
+
+lower_than_five <- c %>% 
+  filter(X1 < 5)
+lower_than_five
+
+prob_total_five <- nrow(lower_than_five)/nrow(c)
+prob_total_five
+```
+
+# The odds of a dice rolling lower than five is 66.7%
+
+2. How many outcomes are there in the sample space of an experiment in which we toss three dice?
+
+```{r}
+s_three_dice <- rolldie(3)
+s_three_dice
+
+s_three_dice %>% 
+  summarise(size_of_s = n())
+```
+
+# If three are rolled there there can be 216 different outcomes.
+
+3. In an experiment where we roll four dice:
+
+how many outcomes are in the event where the total of the four dice equals 5, 6 or 7?
+
+```{r}
+four_dice <- rolldie(4)
+four_dice
+
+four_dice %>% 
+  summarise(size_of_s = n())
+
+four_dice %>% 
+  
+```
+
+what is the probability of this event?
+what assumptions do we apply in answering part ii?
+
+
+4. Five chairs are placed in a row in a room, along with five people of differing height. The people sit down randomly on the chairs. What is the probability that they sit in order of decreasing height, left to right?
+
+
+```{r}
+chair_height <-c("person1", "person2", "person3", "person4", 
+                "person5")
+
+five_chairs <- combinations(n=5,r=5,v=chair_height, repeats.allowed = TRUE)
+five_chairs
+
+1/126
+```
+
+# There is a 1/126 chance (0.8%) of them sitting in the correct order from decreasing height, left to right. 
+
+5. I roll six dice:
+
+what is the probability I see the numbers 6, 5, 4, 3, 2 and 1 in order on the dice, left to right?
+
+```{r}
+six_dice <- rolldie(6)
+six_dice
+
+six_dice %>% 
+  summarise(size_of_s = n())
+```
+# The odds of rolling a set of six dice 6-1, left to right is 1/46656. 
+    
+what is the probability I see one each of the numbers 6, 5, 4, 3, 2 and 1 on the dice regardless of order?
+
+6. If I draw a single card from a 52-card deck, and it is black, what is the probability that its suit is spades? 
+
+# 50% odds
