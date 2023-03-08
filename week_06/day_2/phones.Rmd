@@ -1,0 +1,117 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+library(tidyverse)
+library(janitor)
+```
+
+```{r}
+phones <- read_csv("../../../CodeClan_Homework_Struan/week_06/day_2/data/20190928-items.csv")
+```
+
+```{r}
+phones <- phones %>% 
+  clean_names()
+```
+
+```{r}
+phones_selected <- phones %>% 
+  select(brand, title, rating, total_reviews)
+```
+
+# Question 2.
+Find the brand with the highest numbers of phones in the dataset.
+
+```{r}
+top_brand <- phones_selected %>% 
+  group_by(brand) %>% 
+  count(brand)
+```
+
+Samsung has the most number of brands out of all the phones. 
+
+# Question 3.
+
+For your top brand, plot the distribution of phone ratings as a probability density, overlaying a fitted normal distribution.
+
+```{r}
+samsung_stats <- phones %>% 
+  filter(brand == "Samsung") %>% 
+  summarise(
+    num = n(),
+    mean = mean(rating),
+    sd = sd(rating)
+  )
+```
+
+```{r}
+samsung <- phones_selected %>% 
+  filter(brand == "Samsung") %>% 
+  ggplot(aes(x = rating))+
+  geom_histogram(aes(y = after_stat(density)), col = "white") +
+  stat_function(
+    fun = dnorm,
+    args = list(
+      mean = samsung_stats$mean,
+      sd = samsung_stats$sd
+    ),
+    col = "steelblue"
+  )
+  
+
+```
+
+ Do you think the normal distribution provides a good model of these ratings?
+ 
+The normal distribution provides a good structure of how the ratings have been allocated but it struggles to highlight the high density of ratings the Samsung phones were given. 
+
+```{r}
+phones_selected %>% 
+  filter(brand == "Samsung") %>% 
+  summarise(
+    mean_reviews = mean(rating),
+    median_reviews = median(rating),
+    mode_reviews = mode(rating)
+  )
+```
+
+The mean reviews are 3.57, the median is 3.6 and the mode is unknown due to it being a string character rather than numeric. 
+```{r}
+phones_selected %>% 
+  filter(brand == "Samsung") %>% 
+  summarise(skewness = skewness(rating, type = 1))
+```
+The data is moderately skewed. 
+
+```{r}
+phones_selected %>% 
+  filter(brand == "Samsung") %>% 
+  summarise(
+    Q1 = quantile(rating, 0.25),
+    Q2 = quantile(rating, 0.5),
+    Q3 = quantile(rating, 0.75),
+    IQR = Q3 - Q1,
+    range = diff(range(rating))
+  )
+```
+```{r}
+ggplot(samsung_stats, aes(x = rating))+
+  geom_boxplot()
+```
+
+
+# Question 4.
+We can be more quantitative in comparing the distribution of top brand ratings with a normal distribution. You calculated the mean() and sd() of your distribution in an earlier question. Use these values to calculate the proportions of ratings within one-, two- and three standard deviations of the mean. Compare these proportions with those you expect for a normal distribution.
+
+1 Standard Deviation 
+
+```{r}
+samsung_stats %>%
+  filter(rating >= samsung_stats$mean - samsung_stats$sd) %>%
+  filter(rating <= samsung_stats$mean + samsung_stats$sd) %>%
+  summarise(prop_within_1sd = n() / nrow(samsung_ratings))
+```
+

@@ -142,6 +142,27 @@ four_dice %>%
 what is the probability of this event?
 what assumptions do we apply in answering part ii?
 
+# Copied from answers
+
+```{r}
+four_rolls <- rolldie(4)
+
+# add total random variable
+four_rolls <- four_rolls %>%
+  mutate(total = rowSums(.))
+
+# now find the rows where the total is 5, 6 or 7
+total_between_5_7 <- four_rolls %>%
+  filter(total %in% c(5, 6, 7))
+
+nrow(total_between_5_7)
+```
+
+```{r}
+#  What is the probability of this event?
+prob <-nrow(total_between_5_7) / nrow(four_rolls)
+prob
+```
 
 4. Five chairs are placed in a row in a room, along with five people of differing height. The people sit down randomly on the chairs. What is the probability that they sit in order of decreasing height, left to right?
 
@@ -158,6 +179,18 @@ five_chairs
 
 # There is a 1/126 chance (0.8%) of them sitting in the correct order from decreasing height, left to right. 
 
+# Copied from answers
+
+```{r}
+# number of ordered arrangements:
+num_outcomes <- factorial(5)
+
+# only one of these is correctly ordered:
+prob_perfect_order <- 1/num_outcomes
+prob_perfect_order
+```
+
+
 5. I roll six dice:
 
 what is the probability I see the numbers 6, 5, 4, 3, 2 and 1 in order on the dice, left to right?
@@ -173,6 +206,45 @@ six_dice %>%
     
 what is the probability I see one each of the numbers 6, 5, 4, 3, 2 and 1 on the dice regardless of order?
 
+# copied from answers
+
+```{r}
+contains_654321 <- six_rolls %>%
+  filter(isin(., c(6, 5, 4, 3, 2, 1), ordered = FALSE))
+
+prob <- nrow(contains_654321) / nrow(six_rolls)
+prob
+```
+
+
 6. If I draw a single card from a 52-card deck, and it is black, what is the probability that its suit is spades? 
 
 # 50% odds
+
+correct but here's the formula (copied from answers)
+
+```{r}
+
+# set up the card draw
+card_draw <- cards(jokers = FALSE)
+
+# add in the conditions to show which are black cards, and which arent
+card_draw <- card_draw %>%
+  mutate(black_card = (suit == "Club" | suit == "Spade"))
+
+# now we can filter the rows we want, and figure out the probability of getting a black spade
+spades_and_black_card <- card_draw %>%
+  filter(black_card == TRUE & suit == "Spade")
+prob_spades_and_black <- nrow(spades_and_black_card) / nrow(card_draw)
+
+# we can figure out the probability of getting a black card now
+black_card <- card_draw %>%
+  filter(black_card == TRUE)
+prob_black <- nrow(black_card) / nrow(card_draw)
+
+# now we can figure out the conditional probability
+prob_spades_given_black <- prob_spades_and_black / prob_black
+prob_spades_given_black
+```
+
+# Answer is still 50% - long way for a short cut. 
