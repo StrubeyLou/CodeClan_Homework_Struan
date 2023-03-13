@@ -20,6 +20,12 @@ ames %>%
   ggplot(aes(x = lot_area)) +
   geom_histogram(colour = "white")
 ```
+```{r}
+ames %>%
+  ggplot(aes(x = lot_area)) +
+  geom_boxplot()
+```
+
 
 The graph peaks very early around the average but there are a few outliers in the data that give it a long tail. 
 
@@ -59,21 +65,37 @@ ci_95_house <- bootstrap_house_sample %>%
             upper_bound = quantile(mean_lot_area, probs = 0.975)
             )
 ```
-
-```{r}
-library(infer)
-```
-
 ```{r}
 infer_ci_95_house <- bootstrap_house_sample %>% 
    get_confidence_interval(level = 0.95, type = "percentile")
 infer_ci_95_house
 ```
 
+
 ```{r}
-bootstrap_house_sample %>% 
+library(infer)
+```
+
+```{r}
+bootstrap_resample_house <- ames %>% 
+  specify(response = lot_area) %>% 
+  generate(reps = 5000, type = "bootstrap") %>% 
+  calculate(stat = "mean")
+
+bootstrap_resample_house
+```
+
+```{r}
+infer_ci_95_house_2 <- bootstrap_resample_house %>% 
+   get_confidence_interval(level = 0.95, type = "percentile")
+infer_ci_95_house
+```
+
+
+```{r}
+bootstrap_resample_house %>% 
   visualise(bins = 30) +
-  shade_ci(endpoints = infer_ci_95_house)
+  shade_ci(endpoints = infer_ci_95_house_2)
 ```
 
 # Task 5
@@ -105,6 +127,17 @@ bootstrap_house_sample %>%
   summarise(mean(mean_lot_area))
   
 ```
+# Wrong answer 
+
+Here is the correct answer
+
+```{r}
+ames %>%
+  summarise(point_est = mean(lot_area))
+```
+
+
+
 
 ```{r}
 ames_1920 <- ames %>% 

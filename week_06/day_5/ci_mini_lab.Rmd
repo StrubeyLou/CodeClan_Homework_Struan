@@ -1,0 +1,107 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+# Minilab CIs 
+
+
+```{r}
+library(tidyverse)
+library(janitor)
+```
+
+```{r}
+ames <- read_csv("data/ames.csv") %>% 
+  clean_names()
+
+```
+# Question 2
+
+Plot a histogram of sale_price. Is the distribution normal?
+
+```{r}
+ames %>% 
+  ggplot(aes(x = sale_price))+
+  geom_histogram(colour = "white")
+```
+
+The distribution is not normal as the graph is skewed to the right. 
+
+# Question 3
+
+Calculate the population parameter mean of sale_price. Store it in a variable, as we’ll need this value later when we check if each CI contains the parameter value or not.
+
+```{r}
+mean_price_ames <- ames %>% 
+  summarise(mean_price = mean(sale_price))
+```
+
+```{r}
+library(infer)
+```
+
+```{r}
+this_sample <- ames %>%
+  rep_sample_n(size = 100, reps = 1) %>%
+  ungroup() %>%
+  select(sale_price)
+```
+
+```{r}
+this_bootstrap <- this_sample %>%
+    specify(response = sale_price) %>%
+    generate(reps = 1000, type = "bootstrap") %>%
+    calculate(stat = "mean")
+```
+
+```{r}
+ this_ci <- this_bootstrap %>%
+    get_ci(level = 0.95, type = "percentile")
+```
+
+```{r}
+results <- tibble()
+for (sample_num in 1:1000){
+
+  # get a new 100-observation random sample from ames
+  this_sample <- ames %>%
+    rep_sample_n(size = 100, reps = 1) %>%
+    ungroup() %>%
+    select(sale_price)
+  
+  # create a bootstrap distribution of mean(sale_price)
+  # use 1000 reps
+  this_bootstrap <- this_sample %>%
+    specify(response = sale_price) %>%
+    generate(reps = 1000, type = "bootstrap") %>%
+    calculate(stat = "mean")
+
+  # get 95% CI for this bootstrap distribution
+  this_ci <- this_bootstrap %>%
+    get_ci(level = 0.95, type = "percentile")
+  
+  # prepare new row for results, storing CI bounds
+  this_result <- c(
+    sample_num = sample_num, 
+    lower = this_ci %>% 
+      pull(lower_ci), 
+    upper = this_ci %>%
+      pull(upper_ci)
+  )
+  
+  # add this_result to growing tibble of results
+  results <- results %>%
+    bind_rows(this_result)
+}
+```
+
+
+```{r}
+results <- results %>%
+  mutate(popn_param_in_ci = lower <= param$mean_sale_price & param$mean_sale_price <= upper)
+```
+
+
+
+
+
