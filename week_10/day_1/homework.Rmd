@@ -1,0 +1,65 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+library(tidyverse)
+```
+
+```{r}
+project <- read_csv("data/project_management.csv")
+```
+
+# 1.
+
+```{r}
+project %>% 
+  ggplot(aes(x = estimated_length, y = actual_length))+
+  geom_point()
+```
+# 2. 
+
+```{r}
+project %>% 
+  summarise(r = cor(estimated_length, actual_length))
+```
+
+It is a very strong correlation. 
+
+# 3. 
+
+```{r}
+model <- lm(formula = estimated_length ~ actual_length,
+   data = project)
+```
+
+# 4.
+
+```{r}
+summary(model)
+```
+```{r}
+library(broom)
+```
+```{r}
+glance_output <- clean_names(glance(model))
+```
+
+```{r}
+glance_output$r_squared
+```
+
+
+
+# 5. 
+
+```{r}
+library(ggfortify)
+library(modelr)
+```
+
+```{r}
+autoplot(model)
+```
+
