@@ -1,0 +1,86 @@
+---
+title: "House Price Homework"
+output: html_notebook
+---
+
+```{r}
+library(tidyverse)
+library(GGally)
+library(ggfortify)
+library(mosaic)
+```
+
+```{r}
+housing_prices <- read_csv("data/housing_prices.csv")
+```
+
+```{r message=FALSE, warning=FALSE}
+ggpairs(housing_prices)
+```
+
+```{r}
+housing_prices %>% 
+  ggplot(aes(x = total_rooms, y = total_bedrooms))+
+  geom_point()
+```
+
+```{r}
+housing_prices_drop <- housing_prices %>% 
+  select(-total_bedrooms)
+```
+
+```{r message=FALSE, warning=FALSE}
+ggpairs(housing_prices_drop)
+```
+
+```{r}
+housing_prices_drop %>% 
+  ggplot(aes(x = median_house_value, y = total_rooms))+
+  geom_point()
+```
+
+```{r}
+housing_prices_drop %>% 
+  distinct(ocean_proximity)
+```
+
+There are 5 variables but it would create 4 dummy variables because one can be realised. 
+
+```{r}
+housing_prices_drop %>% 
+  ggplot(aes(x = median_house_value, y = median_income))+
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE)
+```
+
+```{r}
+model <- lm(median_house_value ~ median_income, data = housing_prices_drop)
+
+autoplot(model)
+```
+
+There is a massive cluster of point but they stay relatively close to the zero on residuals vs fitted, they mostly stay on the line in Normal Q-Q and there seems to be low heteroskedasticity/funnels. 
+
+```{r}
+summary(model)
+```
+
+
+```{r}
+model2 <- lm(median_house_value ~ median_income + total_rooms, data = housing_prices_drop)
+```
+
+```{r}
+autoplot(model2)
+```
+
+The second model seems pretty similar to the first. Slightly worse with less of a shotgun spread on residual vs fitted, more off the line  in normal Q-Q and there is some evidence of heteroskedacicity on scale-location. However it seems workable. 
+
+```{r}
+summary(model2)
+```
+
+```{r}
+plotModel(model2)
+```
+
