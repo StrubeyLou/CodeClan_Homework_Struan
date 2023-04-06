@@ -1,0 +1,112 @@
+---
+title: "Manual Model Develop Homework"
+output: html_notebook
+---
+
+```{r}
+library(tidyverse)
+library(ggfortify)
+library(janitor)
+library(GGally)
+
+king_county <- read_csv("data/kc_house_data.csv")
+```
+
+```{r}
+king_county_tidy <- king_county %>% 
+  select(-c(id, date, sqft_living15, sqft_lot15, zipcode, sqft_above)) %>% 
+  mutate(yr_renovated = case_when(
+    yr_renovated > 1 ~ 1,
+    .default = 0)) %>% 
+  rename("renovated" = "yr_renovated") %>% 
+  mutate(grade = case_when(
+    grade >= 11 ~ 4,
+    grade <= 8 ~ 3,
+    grade <= 5 ~ 2,
+    grade >= 0 ~ 1,
+    .default = 1
+  ))
+```
+
+```{r}
+alias(lm(price ~ ., data = king_county_tidy))
+```
+
+```{r message=FALSE, warning=FALSE}
+ggpairs(king_county_tidy)
+```
+
+```{r}
+model1 <- lm(price ~ grade, data = king_county_tidy)
+```
+
+```{r}
+autoplot(model1)
+```
+
+Since the grades are split into several categories it is hard to tell if this passes the test. In Normal Q-Q it stays on the line pretty well but then takes a hard turn upwards towards the end. 
+
+```{r}
+summary(model1)
+```
+
+The R2 value is 0.089 and the p-value is well below 0.01. So it is a mixed bag. 
+```{r}
+model2 <- lm(price ~ grade + sqft_living, data = king_county_tidy)
+```
+
+```{r}
+autoplot(model2)
+```
+
+This does look a lot better for being statistically significant but it still takes a hard turn on normal QQ and it looks slightly heterodeskicity/funneled on scale location.
+
+```{r}
+summary(model2)
+```
+
+It has a far higher r2 value of 0.49 and the p-value is far smaller so sqft_living has created a much more reliable model. 
+
+
+```{r}
+model3 <- lm(price ~ grade + sqft_living + bedrooms, data = king_county_tidy)
+```
+
+```{r}
+autoplot(model3)
+```
+
+Whilst the data has bunched up in the middle it does look more like a spread on residual vs fitted, normal Q-Q takes a huge swerve and scale location looks less funneled. Good news all round.
+
+```{r}
+summary(model3)
+```
+
+The r2 has risen to 0.50 and the p-value is still incredibly low so looks good overall. 
+
+```{r}
+model4 <- lm(price ~ grade + sqft_living + bedrooms + renovated, data = king_county_tidy)
+```
+
+```{r}
+autoplot(model4)
+```
+
+It looks pretty much the same as model3 so very little to add to comments.
+
+```{r}
+summary(model4)
+```
+
+The r2 has risen ever so slightly to 0.514 and the p-value has kept to its same low number so the model does have some influence but not much. 
+
+## Extension 
+
+```{r}
+king_county_tidy %>% 
+  ggplot(aes(x = price, y = sqft_living))+
+  geom_point()+
+  geom_smooth(method = "lm", 
+              se = FALSE)
+```
+
