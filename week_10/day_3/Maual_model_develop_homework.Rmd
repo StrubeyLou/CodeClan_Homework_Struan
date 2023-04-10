@@ -12,6 +12,12 @@ library(GGally)
 king_county <- read_csv("data/kc_house_data.csv")
 ```
 
+
+Explanatory vs Predictive model:
+
+* Explanatory: emphasis on simplicity, "parsimony", lean-ness to enable us to best understand a real world process.
+* Predictive: emphasis on pure predictive power e.g. objective measures like r2 ect; don't care if it's easy/possible to understand "black-box" 
+
 ```{r}
 king_county_tidy <- king_county %>% 
   select(-c(id, date, sqft_living15, sqft_lot15, zipcode, sqft_above)) %>% 
@@ -34,6 +40,7 @@ alias(lm(price ~ ., data = king_county_tidy))
 
 ```{r message=FALSE, warning=FALSE}
 ggpairs(king_county_tidy)
+ggsave("ggpairs.png")
 ```
 
 ```{r}

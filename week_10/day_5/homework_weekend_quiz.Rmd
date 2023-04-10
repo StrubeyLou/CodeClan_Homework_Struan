@@ -1,0 +1,59 @@
+---
+title: "Homework Quiz"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    number_sections: true
+    df_print: paged
+    css: ../../../styles.css
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+<br><br>
+
+1. I want to predict how well 6 year-olds are going to do in their final school exams. Using the following variables am I likely under-fitting, fitting well or over-fitting? Postcode, gender, reading level, score in maths test, date of birth, family income.
+
+Without getting the data it is hard to tell for certain but based on the variety and number of factors it seems like it would be a fit-well model. 
+
+
+2. If I have two models, one with an AIC score of 34,902 and the other with an AIC score of 33,559 which model should I use?
+
+You want the AIC score to be low as possible so 33,559 would be the better score. 
+
+
+3. I have two models, the first with: r-squared: 0.44, adjusted r-squared: 0.43. The second with: r-squared: 0.47, adjusted r-squared: 0.41. Which one should I use?
+
+These two are very close since the second model has a higher r-squared I would recommend using that however the wodel could be overfitted with too many factors due to it's lower adjusted r-squared number of 0.41. 
+
+
+4. I have a model with the following errors: RMSE error on test set: 10.3, RMSE error on training data: 10.4. Do you think this model is over-fitting?
+
+No because a close RMSE error between test and training shows the model is well fitting. 
+
+5. How does k-fold validation work?
+
+K-fold validation works by splitting your data into even chunks (i.e. fifths) and allocating it into categories. From there you leave one set to be put aside whilst the majority is "trained" with the model you have built. You then test the chunk set aside to see if the model creates a consistent answer. 
+
+You then repeat the same process with a new chunk of the dataset untill all the data has both been trained and tested. 
+
+
+6. What is a validation set? When do you need one?
+
+A validation set should only be used once you are finished selecting the model. It is not used in either testing or training you model but should give a final estimate on the performance of the model.  
+
+7. Describe how backwards selection works.
+
+Backwards selection works by having all possible predictions in the model then gradually takes away each predictor that lowers the r2 model the least. This process is repeated until there are no longer any predictors. 
+
+
+8. Describe how best subset selection works.
+
+Whereas the forwards selection and backwards selection are fixed because you can no longer add or take away predictors respectively the best subset model instead calculates which predictors have the highest effect at finding the highest r2 model. This seems simple but requires a lot of processing power to calculate. 
+
+
+

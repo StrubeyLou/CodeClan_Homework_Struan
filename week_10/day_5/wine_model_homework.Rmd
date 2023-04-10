@@ -1,0 +1,173 @@
+---
+title: "Wine Model - Homework"
+output: html_notebook
+---
+
+```{r}
+library(tidyverse)
+library(leaps)
+library(GGally)
+library(ggfortify)
+
+red_wine <- read_csv("data/wine_quality_red.csv")
+white_wine <- read_csv("data/wine_quality_white.csv")
+```
+
+# Red White
+
+```{r}
+red_regsubsets_forward <- regsubsets(quality ~ ., 
+                                 data = red_wine,
+                                 nvmax = 16, 
+                                 method = "forward")
+```
+
+```{r}
+sum_red_regsubset_forward <- summary(red_regsubsets_forward)
+
+sum_red_regsubset_forward
+```
+
+When looking at the results it would seem that alcohol plays the biggest role in predicting the best quality wine. Shock horror, people are happier when they are more pissed off of the wine they drank. 
+
+It is also interesting to see how little influence regions give to the wine. As we can see "wine id" is a better selector than any other region showing that the correlation there is pretty close to random.
+
+Let's take a look at some graphs
+
+```{r}
+plot(red_regsubsets_forward, scale = "adjr2")
+```
+
+We can see that the main influencing factors for wine are chemical but after we add a handful of factors the wine stubbornly remains at an adjusted r2 number of 0.32 at best.
+
+```{r}
+plot(red_regsubsets_forward, scale = "bic")
+```
+
+I am unsure what these rresults mean as it looks like on the second level all factors are being used. When looking at the numbers there is very little influence to adding more factors as can be seen with a score difference from - 510 to - 560. 
+
+```{r}
+plot(sum_red_regsubset_forward$rsq, type = "b")
+```
+
+This graph gives a much clearer image that adding between 6 - 9 predictors will give the optimum number of factors. Any more than that become extremely unnecessary. 
+
+The top predictors are:
+
+alcohol, volatile_acidity, sulphates, total_sulphur_dioxide, chlorides, p_h, free_sulfur_dioxide, citric_acid, wine_id
+
+Since wine id is a categorical factor rather than a predictor it will be taken out. 
+
+```{r}
+red_wine <- red_wine %>% 
+  select(-c(wine_id, region))
+```
+
+```{r message=FALSE, warning=FALSE}
+ggpairs(red_wine)
+```
+
+```{r}
+model_red <- lm(quality ~ alcohol + volatile_acidity + sulphates + total_sulfur_dioxide + chlorides + p_h + free_sulfur_dioxide + citric_acid, data = red_wine)
+```
+
+```{r}
+summary(model_red)
+```
+
+When looking at the multiple linear regression model we can see it matches the prediction with an r2 value of 0.32. However we can also see two predictors the free_sulfur_dioxide and citric_acid do not have significant p-values so those will be removed. 
+
+```{r}
+autoplot(model_red)
+```
+
+When looking at the plots they actually look pretty good. Not amazing but far better than expected. There is an even spread on residual vs. fitted, the data stays close to the line on normal Q-Q and there is no sign of heterodeskacicity (funneling) on scale-laction.
+
+Let's see how these fair when we take out the two least significant predictors. 
+
+```{r}
+model_red2 <- lm(quality ~ alcohol + volatile_acidity + sulphates + total_sulfur_dioxide + chlorides + p_h, data = red_wine)
+```
+
+```{r}
+summary(model_red2)
+```
+
+The multiple r2 and the adjusted r2 have lowered ever so slightly but otherwise the data stays similar to before.
+
+```{r}
+autoplot(model_red2)
+```
+
+When looking at the autoplot it is pretty much the same as the previous model.
+
+
+Let's see how this compares with white wine...
+
+# White wine
+
+```{r}
+white_regsubsets_forward <- regsubsets(quality ~ ., 
+                                 data = white_wine,
+                                 nvmax = 16, 
+                                 method = "forward")
+```
+
+```{r}
+sum_white_regsubsets_forward <- summary(white_regsubsets_forward)
+
+sum_white_regsubsets_forward
+```
+
+Pretty similar results with alcohol content coming out king of the predictors. Volatile acidity coming in second whereas residual sugar coming next. However we can tell the results are pretty flawed as **wine id** is the fourth most influential predictor. 
+
+Let's see some graphs...
+
+```{r}
+plot(white_regsubsets_forward, scale = "adjr2")
+```
+
+These results for prediction are even worse than the red wine with a lower adjusted r2 value to start and only getting to 0.27 as it's maximum level with very few factors added on.
+
+
+```{r}
+plot(white_regsubsets_forward, scale = "bic")
+```
+
+For the BIC there is a clearly higher distinction when it comes tousing predictors with a entry point of -940 going up to -1500 as it's lowest. 
+
+
+
+```{r}
+plot(sum_white_regsubsets_forward$rsq, type = "b")
+```
+
+It looks like adding a maximum number of predictors between 7-9 would suffice to make the model its optimum predictor. 
+
+Let's take out index and region again.
+
+```{r}
+white_wine <- white_wine %>% 
+  select(-c(wine_id, region))
+```
+
+
+Let's create a multiple linear regression model. 
+
+```{r}
+model_white <- lm(quality ~ alcohol + volatile_acidity + residual_sugar + density + sulphates + p_h + free_sulfur_dioxide, data = white_wine)
+```
+
+```{r}
+summary(model_white)
+```
+
+The multiple r2 and adjusted r2 is smaller than for red wine. Making this is less reliable model. However all p-values included in this model remain significant being well below 0.01.
+
+```{r}
+autoplot(model_white)
+```
+
+Much like the r2 being lower than the red wine model. The plots look less reliable for white wine compared to red. There is less of a spread in residual vs fitted, the line breaks off at the start in normal Q-Q and there is more of a sign of heteroskedacicity/funneling in scale location.
+
+In conclusion both models for red and white are far from perfect. It is hard to break down the quality of taste for a wine to simple chemical components as all these things need to be balanced out to create a harmonious flavour. However it is pretty clear that a higher alcohol content helps build a fantastic flavour profile. 
