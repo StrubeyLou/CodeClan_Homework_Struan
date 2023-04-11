@@ -1,0 +1,110 @@
+---
+title: "Titanic Homework"
+output: html_notebook
+---
+
+```{r}
+library(tidyverse)
+library(rpart)
+library(rpart.plot)
+library(GGally)
+
+titanic <- read_csv("data/titanic_decision_tree_data.csv")
+```
+
+```{r}
+titanic_clean <- titanic %>% 
+  select(-c(...1, passenger_id, name, ticket, fare, cabin)) %>% 
+  drop_na() %>% 
+  mutate(sex = as.factor(sex), 
+           age_status = as.factor(if_else(age <= 16, "child", "adult")),
+         class = factor(pclass, levels = c(3,2,1), labels = c("lower", "middle", "upper")), 
+           survived = factor(survived, levels = c(0,1), labels = c("no", "yes")), 
+           port_embarkation = as.factor(embarked)) %>% 
+  select(-class)
+```
+
+```{r message=FALSE, warning=FALSE}
+ggpairs(titanic_clean)
+```
+
+When it comes to the factors with the most survivability sex plays the biggest factor with many women surviving and many men not surviving, age_status should also play a big factor as children were prioritised on the titanic. It would also seem like class also played a factor in survival rates too. 
+
+```{r}
+ndata <- nrow(titanic_clean)
+
+test_index <- sample(1:ndata, size = ndata*0.2)
+
+titanic_test <- slice(titanic_clean, test_index)
+
+titanic_train <- slice(titanic_clean, -test_index)
+```
+
+I chose 20% to 80% test to train data as it would be a better representative sample than 10%
+
+```{r}
+titanic_test %>% 
+  janitor::tabyl(survived)
+```
+```{r}
+titanic_train %>% 
+  janitor::tabyl(survived)
+```
+
+As can be seen the numbers are evenly proportional between the test and train data. 
+
+```{r}
+titanic_fit <- rpart(
+  formula = survived ~ .,
+  data = titanic_train,
+  method = "class"
+)
+
+rpart.plot(titanic_fit,
+           yesno = 2,
+           fallen.leaves = TRUE,
+           faclen = 6,
+           digits = 2,
+           split.border.col = 1)
+```
+
+As predicted the biggest factor in the survival rate was based on sex, men overwhelmingly did not survive getting off the fateful ship. For those who are male the next stage is their age and whether or not they were aged 13 or over which is surprising as you would have liked to have thought all children would be prioritised. Anyone who breaks down to being male and over 13 had a 58% chance of not surviving the titanic. 
+
+When going in the other direction if you were female and were above the Lower/3rd class of ticket you had a survivability rate of 23%. After that it breaks down to age being a predominant factor, initially if you are aged over 39 then asks if you had a sibling or spuse on the boat then goes back to being aged 28 years old or over. 
+
+I did not predict age would be as big a factor but gender, age and class were the three biggest. 
+
+```{r}
+library(modelr)
+library(yardstick)
+```
+
+```{r}
+titanic_test_pred <- titanic_test %>% 
+  add_predictions(titanic_fit, type = "class")
+
+titanic_test_pred
+```
+
+```{r}
+conf_mat <- titanic_test_pred %>% 
+  conf_mat(truth = survived, estimate = pred)
+
+conf_mat
+```
+
+```{r}
+accuracy <- titanic_test_pred %>% 
+  accuracy(truth = survived, estimate = pred)
+
+accuracy
+```
+
+```{r}
+titanic_test_pred %>% 
+  sensitivity(truth = survived, estimate = pred)
+
+titanic_test_pred %>% 
+  specificity(truth = survived, estimate = pred)
+```
+
