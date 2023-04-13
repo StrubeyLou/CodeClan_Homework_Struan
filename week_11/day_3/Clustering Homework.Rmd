@@ -1,0 +1,101 @@
+---
+title: "Let's all go to mall!"
+output: html_notebook
+---
+
+```{r}
+library(tidyverse)
+library(CodeClanData)
+library(cluster)
+library(factoextra)
+library(dendextend)
+library(corrplot)
+library(magrittr)
+library(broom)
+library(janitor)
+```
+
+```{r}
+mall_data <- read_csv("data/mall_customers.csv")
+```
+```{r}
+mall_data_clean <- mall_data %>% 
+  clean_names() %>% 
+  select(-c(customer_id, age, gender))
+```
+
+```{r}
+mall_data_clean %>% 
+  ggplot(aes(x = annual_income_k, y = spending_score_1_100))+
+  geom_point()
+```
+
+```{r}
+mall_scale <- mall_data_clean %>% 
+  mutate_if(is.numeric, scale)
+
+mall_scale
+```
+
+```{r}
+clustered_mall <- kmeans(mall_scale, centers = 5,
+                         nstart = 25)
+
+clustered_mall
+```
+
+```{r}
+augment_mall <- augment(clustered_mall, mall_scale)
+
+augment_mall
+```
+
+```{r}
+max_k <- 20 
+k_clusters <- tibble(k = 1:max_k) %>%
+  mutate(
+    kclust = map(k, ~ kmeans(mall_scale, .x, nstart = 25)), 
+    tidied = map(kclust, tidy),
+    glanced = map(kclust, glance),
+    augmented = map(kclust, augment, mall_scale)
+  )
+k_clusters
+```
+
+```{r}
+clusterings <- k_clusters %>% 
+  unnest(glanced)
+clusterings
+```
+Elbow method 
+
+```{r}
+ggplot(clusterings) +
+  aes(x = k, y = tot.withinss) +
+  geom_point() +
+  geom_line() +
+  scale_x_continuous(breaks = seq(1,20,1))
+```
+
+silhouette method
+
+```{r}
+fviz_nbclust(mall_scale, kmeans, method = "silhouette", nstart = 25)
+```
+gap statistics method
+
+```{r}
+fviz_nbclust(mall_scale, 
+             kmeans, 
+             method = "gap_stat")
+```
+
+After trying three different K allocation techniques the elbow method giving 2/3, the silhouette giving 5 and gap statistics giving a 1. It would seem that this data is not good for clustering. 
+
+```{r}
+augment_mall %>% 
+  ggplot(aes(x = annual_income_k[,1], y = spending_score_1_100[,1], colour = .cluster))+
+  geom_point()
+```
+
+There is a cluster of those with a high income who spend a lot of money, these will be an easy demographic to market to. There are people who don't have much money but spend a lot who will also be easy to market to. Those in the middle with medium income and medium spend who will still buy but less frequently. Then there are those who don't spend much regardless of their income. Who will be tougher to market to. 
