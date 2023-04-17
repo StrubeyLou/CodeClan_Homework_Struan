@@ -37,6 +37,14 @@ mall_scale <- mall_data_clean %>%
 mall_scale
 ```
 
+An alternative from the answers:
+
+customers_scale <- customers %>% 
+  select(annual_income_k, spending_score_1_100) %>%
+    mutate_all(scale)
+
+summary(customers_scale)
+
 ```{r}
 clustered_mall <- kmeans(mall_scale, centers = 5,
                          nstart = 25)
@@ -49,6 +57,12 @@ augment_mall <- augment(clustered_mall, mall_scale)
 
 augment_mall
 ```
+
+Suggestion from answers 
+
+customer_clusters_k5 <- k_clusters %>% 
+  unnest(cols = c(augmented)) %>%
+  filter(k == 5) 
 
 ```{r}
 max_k <- 20 

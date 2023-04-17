@@ -1,0 +1,165 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+library(tidyverse)
+library(janitor)
+library(GGally)
+library(pROC)
+library(modelr)
+library(caret)
+```
+
+```{r}
+orange <- read_csv("data/orange_juice.csv")
+orange_dic <- read_csv("data/data_dict.txt")
+```
+
+```{r}
+orange_juice <- orange %>% 
+  clean_names() %>% 
+  mutate_if(is_character, as_factor) %>% 
+  select(-c(price_ch, price_mm, store_id, price_diff, list_price_diff))
+  
+```
+
+```{r}
+alias(purchase ~ ., data = orange_juice)
+```
+
+
+```{r message=FALSE, warning=FALSE}
+ggpairs(orange_juice)
+```
+
+My hypothesis is that the following factors will influence people to buy Citrus Hill more over Minute Maid. Discounts on Citrus Hill and Minute Maid, loyal_ch where people have their loyalty measured in citrus hill. 
+
+```{r}
+model_all <- glm(purchase ~ .,
+                 data = orange_juice,
+                 family = binomial(link = "logit"))
+
+summary(model_all)
+```
+Looking at the numbers and p-values of the factors it would seem my hypothesis was not quite right. Whilst loyal_ch and discount_mm did have low p-values, discount_ch did not and there were several other factors which had lower p-values which I did not mention like sale_price, store7 and pct_disc_mm. 
+
+I will make three models to compare, the first is just loyal_ch, the second will include all factors I have listed above and the last will be the top 3 factors which give a price comparison to citrus hill over minute maid. 
+
+```{r}
+juice_logreg_modela <- glm(purchase ~ loyal_ch,
+                           data = orange_juice,
+                           family = binomial(link = "logit"))
+
+summary(juice_logreg_modela)
+```
+
+```{r}
+juice_logreg_modelb <- glm(purchase ~ loyal_ch + disc_mm + sale_price_mm + sale_price_ch + store7 + pct_disc_mm,
+                           data = orange_juice,
+                           family = binomial(link = "logit"))
+
+summary(juice_logreg_modelb)
+```
+
+```{r}
+juice_logreg_modelc <- glm(purchase ~ disc_mm + sale_price_mm + sale_price_ch + pct_disc_mm,
+                           data = orange_juice,
+                           family = binomial(link = "logit"))
+summary(juice_logreg_modelc)
+```
+
+
+```{r}
+juice_data_a <- orange_juice %>% 
+  add_predictions(juice_logreg_modela, type = "response")
+
+head(juice_data_a)
+```
+
+```{r}
+juice_data_b <- orange_juice %>% 
+  add_predictions(juice_logreg_modelb, type = "response")
+```
+
+```{r}
+juice_data_c <- orange_juice %>% 
+  add_predictions(juice_logreg_modelc, type = "response")
+```
+
+```{r}
+roc_juice_moda <- juice_data_a %>% 
+  roc(response = purchase, predictor = pred)
+
+roc_juice_modb <- juice_data_b %>% 
+  roc(response = purchase, predictor = pred)
+
+roc_juice_modc <- juice_data_c %>% 
+  roc(response = purchase, predictor = pred)
+```
+
+```{r}
+roc_curve <- ggroc(
+  data = list(
+    mod1 = roc_juice_moda, 
+    mod2 = roc_juice_modb,
+    mod3 = roc_juice_modc
+  ), 
+  legacy.axes = TRUE) +
+  coord_fixed()
+
+roc_curve
+```
+
+```{r}
+auc(roc_juice_moda)
+```
+
+```{r}
+auc(roc_juice_modb)
+```
+
+```{r}
+auc(roc_juice_modc)
+```
+
+```{r}
+train_control <- trainControl(method = "repeatedcv",
+                              number = 5,
+                              repeats = 100,
+                              savePredictions = TRUE,
+                              classProbs = TRUE,
+                              summaryFunction = twoClassSummary)
+```
+
+```{r}
+modela <- train(purchase ~ loyal_ch,
+                data = orange_juice,
+                trControl = train_control,
+                method = "glm",
+                family = binomial(link = "logit"))
+
+summary(modela)
+```
+
+```{r}
+modelb <- train(purchase ~ loyal_ch + disc_mm + sale_price_mm + sale_price_ch + store7 + pct_disc_mm,
+                data = orange_juice,
+                trControl = train_control,
+                method = "glm",
+                family = binomial(link = "logit"))
+
+summary(modelb)
+```
+
+```{r}
+modelc <- train(purchase ~ disc_mm + sale_price_mm + sale_price_ch + pct_disc_mm,
+                data = orange_juice,
+                trControl = train_control,
+                method = "glm",
+                family = binomial(link = "logit"))
+
+summary(modelc)
+```
+
